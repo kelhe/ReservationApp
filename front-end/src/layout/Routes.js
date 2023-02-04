@@ -53,7 +53,7 @@ function Routes() {
         <Dashboard date={date} render={render} currentDate={currentDate} setCurrentDate={setCurrentDate} reservations={reservations} reservationsError={reservationsError}/>
       </Route>
       <Route exact={true} path="/reservations/new">
-        <NewReservation setRender={setRender} render={render} setCurrentDate={setCurrentDate} />
+        <NewReservation setRender={setRender} render={render} setCurrentDate={setCurrentDate} setReservationsError ={setReservationsError}/>
       </Route>
       <Route>
         <NotFound />

@@ -1,9 +1,9 @@
-import React, {useState}from "react";
+import React, {useState} from "react";
 import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
 import { formatAsDate } from "../utils/date-time";
 
-function NewReservation({setCurrentDate}){
+function NewReservation({setRender, render, setCurrentDate,setReservationsError}){
 let history = useHistory()
 const initialForm = {
     "first_name" : "",
@@ -24,18 +24,22 @@ const handleChange = ({ target }) => {
       };
 
 const handleSubmit = async (event) => {
-    event.preventDefault();
-    const response = await createReservation(formData);
-    setFormData(initialForm);
-    if(response){
+    try{
+        event.preventDefault();
+        const abortController = new AbortController();
+        const response = await createReservation(formData,abortController.signal);
         const newDate = formatAsDate(response.data.reservation_date)
         setCurrentDate(newDate)
         history.push(`/dashboard?date=${newDate}`);
+        setFormData(initialForm);
+        setRender(!render);
+        } catch(error){
+           setReservationsError(error)
+        }
     }
-  };
-
-return (
-<div>
+    
+    return (
+            <div>
    <h1>New Reservation</h1>
    <form onSubmit={handleSubmit}>
         <label htmlFor="first_name" className="d-flex flex-column py-3">First Name
@@ -115,6 +119,7 @@ return (
    </form>
 </div>
 )
-}
+};
+
 
 export default NewReservation

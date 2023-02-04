@@ -7,7 +7,6 @@ import formatReservationTime from "./format-reservation-date";
 //use Axios
 import axios from "axios"
 
-
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:5001";
 
@@ -16,9 +15,6 @@ const API_BASE_URL =
  */
 const headers = new Headers();
 headers.append("Content-Type", "application/json");
-
-
-
 /**
  * Fetch `json` from the specified URL and handle error status codes and ignore `AbortError`s
  *
@@ -37,13 +33,10 @@ headers.append("Content-Type", "application/json");
 async function fetchJson(url, options, onCancel) {
   try {
     const response = await fetch(url, options);
-
     if (response.status === 204) {
       return null;
     }
-
     const payload = await response.json();
-
     if (payload.error) {
       return Promise.reject({ message: payload.error });
     }
@@ -56,7 +49,6 @@ async function fetchJson(url, options, onCancel) {
     return Promise.resolve(onCancel);
   }
 }
-
 /**
  * Retrieves all existing reservation.
  * @returns {Promise<[reservation]>}
@@ -73,15 +65,15 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
-export async function createReservation(formData){
+export async function createReservation(formData,signal){
 try{
    const url = `${API_BASE_URL}/reservations`
    if(typeof formData.people == "string" ){
     formData.people = Number(formData.people)
    }
-  const response = await axios.post(url,{data : formData})
+  const response = await axios.post(url,{data : formData},{signal})
   return response.data
 } catch(error) {
- console.log("something")
+ console.log(error)
 }
 }

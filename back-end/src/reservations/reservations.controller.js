@@ -12,10 +12,14 @@ let currentDate = `${year}-${month}-${day}`;
 //validation middleware for date,time,number,people
 async function datePropertyIsValid(req,res,next){
   const {data : {reservation_date} = {}} = req.body
-  if(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(reservation_date)){
-    return next()
+  if(!/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(reservation_date)){
+    return next({status:400, message: "Please provide a valid reservation_date"})
   }
-  next({status:400, message: "Please provide a valid reservation_date"})
+  
+  if(reservation_date.getDay() == 2 ){
+    console.log("true")
+  }
+  next();
 }
 
 async function timePropertyIsValid(req,res,next){
