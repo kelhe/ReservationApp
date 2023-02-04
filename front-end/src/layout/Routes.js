@@ -4,7 +4,7 @@ import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import { listReservations } from "../utils/api";
-import NewReservation from "./NewReservation";
+import NewReservation from "../reservations/NewReservation";
 
 /**
  * Defines all the routes for the application.

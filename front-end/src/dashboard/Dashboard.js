@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
-import Reservations from "./Reservations";
+import Reservations from "../reservations/Reservations";
 import {today,next,previous} from "../utils/date-time"
 /**
  * Defines the dashboard page.

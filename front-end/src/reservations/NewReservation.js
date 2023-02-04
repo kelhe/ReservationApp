@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
 import { formatAsDate } from "../utils/date-time";
-import ErrorAlert from "./ErrorAlert";
+import ErrorAlert from "../layout/ErrorAlert";
+import { today } from "../utils/date-time";
 
 function NewReservation({ setCurrentDate, setReservationsError, reservationsError,render,setRender }) {
   let history = useHistory();
@@ -34,6 +35,7 @@ function NewReservation({ setCurrentDate, setReservationsError, reservationsErro
       console.log(response)
       const newDate = formatAsDate(response.reservation_date);
       setCurrentDate(newDate);
+      setRender(!render);
       history.push(`/dashboard?date=${newDate}`);
     } catch (error) {
       setReservationsError(error);
@@ -93,6 +95,7 @@ function NewReservation({ setCurrentDate, setReservationsError, reservationsErro
             name="reservation_date"
             onChange={handleChange}
             value={formData.reservation_date}
+            min={today()}
             required
           />
         </label>

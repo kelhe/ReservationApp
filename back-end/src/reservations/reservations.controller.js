@@ -2,7 +2,7 @@ const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasValidProperties = require("../errors/hasValidProperties");
 const hasRequiredProperties = require("../errors/hasRequiredProperties");
-const {getDateFormat,getToday,checkIfPast} = require("../utils/dateValidation");
+const {getDateFormat,getToday,checkIfPast,checkBusinessHours,checkTimePassed} = require("../utils/date-timeValidation");
 const currentDate = getToday();
 
 //validation middleware for date,time,number,people
@@ -28,8 +28,15 @@ async function timePropertyIsValid(req, res, next) {
       message: "Please provide a valid reservation_time",
     });
   }
+  if(!checkBusinessHours(reservation_time)){
+    return next({status:400, message: "Time must be in between 10:30AM and 9:30PM"})
+  }
+  if(checkTimePassed(reservation_time)){
+    return next({status:400, message: "The time you selected has already passed. Please select a future time!"})
+  }
   next();
 }
+
 
 async function peoplePropertyIsValid(req, res, next) {
   const { data: { people } = {} } = req.body;
