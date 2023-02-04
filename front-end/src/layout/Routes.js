@@ -33,7 +33,6 @@ function Routes() {
        const response = await listReservations({ date : currentDate }, abortController.signal)
        setReservations(response)
       } catch(error){
-        console.log(error,"fail")
         setReservationsError(error)
       }
     }
@@ -53,7 +52,7 @@ function Routes() {
         <Dashboard date={date} render={render} currentDate={currentDate} setCurrentDate={setCurrentDate} reservations={reservations} reservationsError={reservationsError}/>
       </Route>
       <Route exact={true} path="/reservations/new">
-        <NewReservation setRender={setRender} render={render} setCurrentDate={setCurrentDate} />
+        <NewReservation setRender={setRender} render={render} setCurrentDate={setCurrentDate} setReservationsError={setReservationsError} reservationsError={reservationsError}/>
       </Route>
       <Route>
         <NotFound />
