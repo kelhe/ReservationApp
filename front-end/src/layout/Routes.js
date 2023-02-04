@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
@@ -14,32 +14,34 @@ import NewReservation from "./NewReservation";
  * @returns {JSX.Element}
  */
 function Routes() {
-  let params = (new URL(document.location)).searchParams;
-  let date = params.get('date')
-  if(!date){
-    date = today()
+  let params = new URL(document.location).searchParams;
+  let date = params.get("date");
+  if (!date) {
+    date = today();
   }
-  const [render,setRender] = useState(false)
+  const [render, setRender] = useState(false);
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const [currentDate, setCurrentDate] = useState(date)
+  const [currentDate, setCurrentDate] = useState(date);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     const abortController = new AbortController();
     async function loadDashboard() {
       setReservationsError(null);
-      try{
-       const response = await listReservations({ date : currentDate }, abortController.signal)
-       setReservations(response)
-      } catch(error){
-        setReservationsError(error)
+      try {
+        const response = await listReservations(
+          { date: currentDate },
+          abortController.signal
+        );
+        setReservations(response);
+      } catch (error) {
+        setReservationsError(error);
       }
     }
     loadDashboard();
     return () => abortController.abort();
   }, [currentDate, render]);
-  
+
   return (
     <Switch>
       <Route exact={true} path="/">
@@ -49,10 +51,24 @@ function Routes() {
         <Redirect to={"/dashboard"} />
       </Route>
       <Route path="/dashboard">
-        <Dashboard date={date} render={render} currentDate={currentDate} setCurrentDate={setCurrentDate} reservations={reservations} reservationsError={reservationsError}/>
+        <Dashboard
+          date={date}
+          render={render}
+          currentDate={currentDate}
+          setCurrentDate={setCurrentDate}
+          reservations={reservations}
+          reservationsError={reservationsError}
+          setReservationsError={setReservationsError}
+        />
       </Route>
       <Route exact={true} path="/reservations/new">
-        <NewReservation setRender={setRender} render={render} setCurrentDate={setCurrentDate} setReservationsError={setReservationsError} reservationsError={reservationsError}/>
+        <NewReservation
+          setRender={setRender}
+          render={render}
+          setCurrentDate={setCurrentDate}
+          setReservationsError={setReservationsError}
+          reservationsError={reservationsError}
+        />
       </Route>
       <Route>
         <NotFound />

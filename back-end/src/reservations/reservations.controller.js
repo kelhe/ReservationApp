@@ -11,11 +11,11 @@ async function datePropertyIsValid(req, res, next) {
   if (!/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(reservation_date)) {
     return next({status: 400, message: "Please provide a valid reservation_date"});
   }
-  if(getDateFormat(reservation_date).getDay() === 2){
-    return next({status: 400, message : "Sorry, We're closed on Tuesdays. Please select a new date!"})
-  }
   if(checkIfPast(reservation_date)){
     return next({status:400, message: "The date you selected has already passed. Please select a future date!"})
+  }
+  if(getDateFormat(reservation_date).getDay() === 2){
+    return next({status: 400, message : "Sorry, We're closed on Tuesdays. Please select a new date!"})
   }
   next();
 }

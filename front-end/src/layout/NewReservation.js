@@ -4,7 +4,7 @@ import { createReservation } from "../utils/api";
 import { formatAsDate } from "../utils/date-time";
 import ErrorAlert from "./ErrorAlert";
 
-function NewReservation({ setCurrentDate, setReservationsError, reservationsError }) {
+function NewReservation({ setCurrentDate, setReservationsError, reservationsError,render,setRender }) {
   let history = useHistory();
   const initialForm = {
     first_name: "",
@@ -14,6 +14,7 @@ function NewReservation({ setCurrentDate, setReservationsError, reservationsErro
     reservation_time: "",
     people: 1,
   };
+
   const [formData, setFormData] = useState(initialForm);
   //handler form changes for the create form
   const handleChange = ({ target }) => {
@@ -42,7 +43,7 @@ function NewReservation({ setCurrentDate, setReservationsError, reservationsErro
   return (
     <div>
       <h1>New Reservation</h1>
-      <ErrorAlert error={reservationsError} />
+      <ErrorAlert error={reservationsError} setReservationsError={setReservationsError} />
       <form onSubmit={handleSubmit}>
         <label htmlFor="first_name" className="d-flex flex-column py-3">
           First Name
