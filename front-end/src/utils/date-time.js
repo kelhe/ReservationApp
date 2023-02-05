@@ -57,7 +57,7 @@ export function today() {
  *  the date one day prior to currentDate, formatted as YYYY-MM-DD
  */
 export function previous(currentDate) {
-  let [ year, month, day ] = currentDate.split("-");
+  let [year, month, day] = currentDate.split("-");
   month -= 1;
   const date = new Date(year, month, day);
   date.setMonth(date.getMonth());
@@ -73,10 +73,27 @@ export function previous(currentDate) {
  *  the date one day after currentDate, formatted as YYYY-MM-DD
  */
 export function next(currentDate) {
-  let [ year, month, day ] = currentDate.split("-");
+  let [year, month, day] = currentDate.split("-");
   month -= 1;
   const date = new Date(year, month, day);
   date.setMonth(date.getMonth());
   date.setDate(date.getDate() + 1);
   return asDateString(date);
+}
+
+export function formatAs12Hr(time) {
+  let HHMM = formatAsTime(time);
+  if (HHMM < "12:00") {
+    if (HHMM[0] === "0") {
+      HHMM.replace("0", "");
+    }
+    HHMM += "AM";
+  } else if (HHMM === "12:00" || HHMM < "13:00") {
+    HHMM += "PM";
+  } else {
+    const arr = HHMM.split(":");
+    arr[0] -= 12;
+    HHMM = arr.join(":") + "PM";
+  }
+  return HHMM;
 }

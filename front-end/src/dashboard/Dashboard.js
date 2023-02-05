@@ -1,7 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
-import Reservations from "./Reservations";
+import Reservations from "../reservations/Reservations";
 import {today,next,previous} from "../utils/date-time"
 /**
  * Defines the dashboard page.
@@ -9,7 +9,7 @@ import {today,next,previous} from "../utils/date-time"
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({setCurrentDate,currentDate,reservations, reservationsError}) {
+function Dashboard({setCurrentDate,currentDate,reservations, setReservationsError, reservationsError}) {
   const history = useHistory();
 
   const dateHandler = async ({target}) => {
@@ -42,7 +42,7 @@ function Dashboard({setCurrentDate,currentDate,reservations, reservationsError})
         <button type="button" onClick={dateHandler}>Today</button>
         <button type="button" onClick={dateHandler}>Next</button>
       </div>
-      <ErrorAlert error={reservationsError} />
+      <ErrorAlert error={reservationsError} setReservationsError={setReservationsError} />
       <Reservations reservations={reservations}/>
 
     </main>

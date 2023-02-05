@@ -1,5 +1,5 @@
 import React from "react"
-import { formatAsTime } from "../utils/date-time"
+import { formatAs12Hr } from "../utils/date-time"
 
 function Reservations({reservations}){
     const rows = reservations.map((reservation) => (
@@ -7,7 +7,7 @@ function Reservations({reservations}){
             <td>{reservation.reservation_id}</td>
             <td>{reservation.first_name} {reservation.last_name}</td>
             <td>{reservation.mobile_number}</td>
-            <td>{formatAsTime(reservation.reservation_time)}</td>
+            <td>{formatAs12Hr(reservation.reservation_time)}</td>
             <td>{reservation.people}</td>
         </tr>
     ))
