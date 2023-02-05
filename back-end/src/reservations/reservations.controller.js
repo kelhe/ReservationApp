@@ -7,11 +7,12 @@ const currentDate = getToday();
 
 //validation middleware for date,time,number,people
 async function datePropertyIsValid(req, res, next) {
-  const { data: { reservation_date } = {} } = req.body;
+  const { data: { reservation_date, reservation_time } = {} } = req.body;
   if (!/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(reservation_date)) {
     return next({status: 400, message: "Please provide a valid reservation_date"});
   }
-  if(checkIfPast(reservation_date)){
+  if(checkIfPast(reservation_date,reservation_time)){
+
     return next({status:400, message: "The date you selected has already passed. Please select a future date!"})
   }
   if(getDateFormat(reservation_date).getDay() === 2){
@@ -21,7 +22,7 @@ async function datePropertyIsValid(req, res, next) {
 }
 
 async function timePropertyIsValid(req, res, next) {
-  const { data: { reservation_time } = {} } = req.body;
+  const { data: { reservation_date,reservation_time } = {} } = req.body;
   if (!/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(reservation_time)) {
     return next({
       status: 400,
@@ -31,7 +32,7 @@ async function timePropertyIsValid(req, res, next) {
   if(!checkBusinessHours(reservation_time)){
     return next({status:400, message: "Time must be in between 10:30AM and 9:30PM"})
   }
-  if(checkTimePassed(reservation_time)){
+  if(checkIfPast(reservation_date,reservation_time)){
     return next({status:400, message: "The time you selected has already passed. Please select a future time!"})
   }
   next();

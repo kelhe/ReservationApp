@@ -8,19 +8,21 @@ function getToday() {
 }
 
 //get the date in new Date format to be used to check if the date is in future or pass
-//This will focus on date only and leave time check to different middleware and correct error messages will occur when entering a time on same day but after business hours
-function getDateFormat(date) {
+//if time parameter is given then will return with specific time
+function getDateFormat(date,time = 0) {
   const arr = date.split("-");
-  const year = arr[0];
-  const month = arr[1] - 1;
-  const day = arr[2];
-  const formattedForGetDay = new Date(year, month, day);
-  return formattedForGetDay;
+  const [year,month,day] = arr;
+  if(time){
+    const arrTime = time.split(":")
+    const [hour,minute,second = 0] = arrTime
+    return new Date(year,month - 1, day, hour, minute, second) 
+  }
+  return new Date(year, month - 1, day);
 }
-
-function checkIfPast(date) {
-  const reservationDate = getDateFormat(date).getTime();
-  const currentDate = getDateFormat(getToday()).getTime(); //again this is to focus on date only
+//Checks for if date is in the past
+function checkIfPast(date,time = 0) {
+  const reservationDate = getDateFormat(date,time).getTime();
+  const currentDate = new Date().getTime();
   const check = currentDate - reservationDate;
   return check > 0 ? true : false;
 }
@@ -28,7 +30,6 @@ function checkIfPast(date) {
 //converts time to a number to be compared with predetermined opening (10:30AM or 1030) and closing times (9:30PM or 2130)
 function checkBusinessHours(time){
   const resTime = Number(time.split(":").join(""))
-  console.log(resTime)
   if(resTime < 1030){
     return false
   } else if (resTime > 2130){
@@ -38,18 +39,10 @@ function checkBusinessHours(time){
   }
 }
 
-function checkTimePassed(time){
-  const date = new Date();
-  const [hour, minutes, seconds] = [date.getHours(),date.getMinutes(),date.getSeconds()];
-  const currentTime = `${hour}:${minutes}:${seconds}`
-  //if the reservation time is less than the current time means already passed
-  return time < currentTime ? true : false
-}
 
 module.exports = {
   getToday,
   getDateFormat,
   checkIfPast,
   checkBusinessHours,
-  checkTimePassed
 };
