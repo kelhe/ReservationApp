@@ -2,25 +2,28 @@ import React from "react"
 import { formatAs12Hr } from "../utils/date-time"
 
 function Reservations({reservations}){
-    const rows = reservations.map((reservation) => (
-        <tr key={reservation.reservation_id}>
-            <td>{reservation.reservation_id}</td>
-            <td>{reservation.first_name} {reservation.last_name}</td>
-            <td>{reservation.mobile_number}</td>
-            <td>{formatAs12Hr(reservation.reservation_time)}</td>
-            <td>{reservation.people}</td>
+    const rows = reservations.map((reservation) => {
+        const {reservation_id,first_name,last_name,mobile_number,reservation_time,people} = reservation
+        return (
+        <tr key={reservation_id}>
+            <td className="h-25 px-3">{reservation_id}</td>
+            <td className="h-25 px-3">{first_name} {last_name}</td>
+            <td className="h-25 px-3">{mobile_number}</td>
+            <td className="h-25 px-3">{formatAs12Hr(reservation_time)}</td>
+            <td className="h-25 px-3">{people}</td>
+            <td><a href={`/reservations/${reservation_id}/seat`}><button>Seat</button></a></td>
         </tr>
-    ))
+    )})
 
     return (
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Time</th>
-                    <th>People</th>
+                    <th className="px-3">#</th>
+                    <th className="px-3">Name</th>
+                    <th className="px-3">Phone</th>
+                    <th className="px-3">Time</th>
+                    <th className="px-3">People</th>
                 </tr>
             </thead>
             <tbody>{rows}</tbody>

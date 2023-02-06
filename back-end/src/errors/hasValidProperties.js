@@ -5,6 +5,8 @@ const VALID_PROPERTIES = [
     "reservation_date",
     "reservation_time",
     "people",
+    "table_name",
+    "capacity",
     "created_at",
     "updated_at",
 ]
