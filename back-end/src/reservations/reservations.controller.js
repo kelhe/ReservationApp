@@ -3,16 +3,16 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasValidProperties = require("../errors/hasValidProperties");
 const hasRequiredProperties = require("../errors/hasRequiredProperties");
 const {getDateFormat,getToday,checkIfPast,checkBusinessHours,checkTimePassed} = require("../utils/date-timeValidation");
+const reservationExists = require("../utils/reservationExists")
 const currentDate = getToday();
 
-//validation middleware for date,time,number,people
+//validation middleware for date,time,people
 async function datePropertyIsValid(req, res, next) {
   const { data: { reservation_date, reservation_time } = {} } = req.body;
   if (!/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/.test(reservation_date)) {
     return next({status: 400, message: "Please provide a valid reservation_date"});
   }
   if(checkIfPast(reservation_date,reservation_time)){
-
     return next({status:400, message: "The date you selected has already passed. Please select a future date!"})
   }
   if(getDateFormat(reservation_date).getDay() === 2){
@@ -61,6 +61,11 @@ async function create(req, res) {
   res.status(201).json({ data });
 }
 
+async function read(req,res){
+  const data = res.locals.reservation
+  res.status(200).json({data})
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [
@@ -80,4 +85,5 @@ module.exports = {
     asyncErrorBoundary(peoplePropertyIsValid),
     asyncErrorBoundary(create),
   ],
+  read: [asyncErrorBoundary(reservationExists),asyncErrorBoundary(read)]
 };

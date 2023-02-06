@@ -71,9 +71,48 @@ export async function createReservation(formData, signal) {
   }
   return await fetchJson(
     url,
-    { headers, signal, method: "POST", body: JSON.stringify({ data: formData }) },
+    {
+      headers,
+      signal,
+      method: "POST",
+      body: JSON.stringify({ data: formData }),
+    },
     []
   )
     .then(formatReservationDate)
     .then(formatReservationTime);
+}
+
+export async function listTables(signal) {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  return await fetchJson(url, { headers, signal }, [])
+}
+
+export async function createTable(formData, signal) {
+  const url = `${API_BASE_URL}/tables`;
+  if (typeof formData.capacity == "string") {
+    formData.capacity = Number(formData.capacity);
+  }
+  return await fetchJson(
+    url,
+    {
+      headers,
+      signal,
+      method: "POST",
+      body: JSON.stringify({ data: formData }),
+    },
+    []
+  );
+}
+
+export async function seatReservationAt(reservation_id,table_id,signal){
+  const url = `${API_BASE_URL}/tables/${table_id}/seat`
+  return await fetchJson(
+    url,
+    {headers,
+    signal,
+    method: "PUT",
+    body: JSON.stringify({data : {reservation_id}})},
+    []
+  )
 }
