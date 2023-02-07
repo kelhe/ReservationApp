@@ -8,6 +8,7 @@ import Dashboard from "../dashboard/Dashboard";
 import NewReservation from "../reservations/NewReservation";
 import NewTable from "../tables/NewTable";
 import SeatReservation from "../reservations/SeatReservation";
+import Search from "../reservations/Search";
 
 /**
  * Defines all the routes for the application.
@@ -49,15 +50,20 @@ function Routes() {
   }, [currentDate, render]);
 
   const handleFinish = async (table_id) => {
-    try{
+    try {
       const abortController = new AbortController();
-      if(window.confirm("Is this table ready to seat new guests?\nThis cannot be undone.")){
-        await finishTable(table_id,abortController.signal);
-        setRender(!render)
+      if (
+        window.confirm(
+          "Is this table ready to seat new guests?\nThis cannot be undone."
+        )
+      ) {
+        await finishTable(table_id, abortController.signal);
+        setRender(!render);
       }
-    } catch (error){
-      setReservationsError(error)
+    } catch (error) {
+      setReservationsError(error);
     }
+    return () => abortController.abort();
   };
 
   return (
@@ -103,6 +109,12 @@ function Routes() {
         <NewTable
           setRender={setRender}
           render={render}
+          setReservationsError={setReservationsError}
+          reservationsError={reservationsError}
+        />
+      </Route>
+      <Route exact={true} path="/search">
+        <Search
           setReservationsError={setReservationsError}
           reservationsError={reservationsError}
         />
