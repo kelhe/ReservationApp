@@ -2,7 +2,8 @@ const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasValidProperties = require("../errors/hasValidProperties");
 const hasRequiredProperties = require("../errors/hasRequiredProperties");
-const {getDateFormat,getToday,checkIfPast,checkBusinessHours,checkTimePassed} = require("../utils/date-timeValidation");
+const {getDateFormat,getToday,checkIfPast,checkBusinessHours} = require("../utils/date-timeValidation");
+const {checkStatusForCreate,checkStatusForUpdate} = require("../utils/checkStatus")
 const reservationExists = require("../utils/reservationExists")
 const currentDate = getToday();
 
@@ -66,6 +67,15 @@ async function read(req,res){
   res.status(200).json({data})
 }
 
+async function update(req,res){
+  const updatedReservation = {
+    ...req.body.data,
+    reservation_id : res.locals.reservation.reservation_id
+  }
+  const data = await service.update(updatedReservation)
+  res.status(200).json({data})
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [
@@ -83,7 +93,9 @@ module.exports = {
     asyncErrorBoundary(datePropertyIsValid),
     asyncErrorBoundary(timePropertyIsValid),
     asyncErrorBoundary(peoplePropertyIsValid),
+    asyncErrorBoundary(checkStatusForCreate),
     asyncErrorBoundary(create),
   ],
-  read: [asyncErrorBoundary(reservationExists),asyncErrorBoundary(read)]
+  read: [asyncErrorBoundary(reservationExists),asyncErrorBoundary(read)],
+  updateStatus: [asyncErrorBoundary(reservationExists),asyncErrorBoundary(hasValidProperties),asyncErrorBoundary(checkStatusForUpdate),asyncErrorBoundary(update)]
 };

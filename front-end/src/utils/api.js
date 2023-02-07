@@ -65,7 +65,7 @@ export async function listReservations(params, signal) {
 }
 
 export async function createReservation(formData, signal) {
-  const url = `${API_BASE_URL}/reservations`;
+  const url = new URL(`${API_BASE_URL}/reservations`);
   if (typeof formData.people == "string") {
     formData.people = Number(formData.people);
   }
@@ -85,11 +85,11 @@ export async function createReservation(formData, signal) {
 
 export async function listTables(signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
-  return await fetchJson(url, { headers, signal }, [])
+  return await fetchJson(url, { headers, signal }, []);
 }
 
 export async function createTable(formData, signal) {
-  const url = `${API_BASE_URL}/tables`;
+  const url = new URL(`${API_BASE_URL}/tables`);
   if (typeof formData.capacity == "string") {
     formData.capacity = Number(formData.capacity);
   }
@@ -105,24 +105,35 @@ export async function createTable(formData, signal) {
   );
 }
 
-export async function seatReservationAt(reservation_id,table_id,signal){
-  const url = `${API_BASE_URL}/tables/${table_id}/seat`
+export async function seatReservationAt(reservation_id, table_id, signal) {
+  const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
   return await fetchJson(
     url,
-    {headers,
-    signal,
-    method: "PUT",
-    body: JSON.stringify({data : {reservation_id}})},
+    {
+      headers,
+      signal,
+      method: "PUT",
+      body: JSON.stringify({ data: { reservation_id } }),
+    },
     []
-  )
+  );
 }
 
-export async function finishTable(table_id,signal){
-  const url = `${API_BASE_URL}/tables/${table_id}/seat`
-  return await fetchJson(
-    url,
-    {headers,
+export async function finishTable(table_id, signal) {
+  const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
+  return await fetchJson(url, { headers, signal, method: "DELETE" });
+}
+
+export async function updateReservationStatus(
+  reservation_id,
+  newStatus,
+  signal
+) {
+  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}/status`);
+  return await fetchJson(url, {
+    headers,
     signal,
-    method : "DELETE"}
-  )
+    method: "PUT",
+    body: JSON.stringify({ data: {status: newStatus} }),
+  });
 }
