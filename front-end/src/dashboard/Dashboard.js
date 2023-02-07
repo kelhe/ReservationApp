@@ -10,7 +10,7 @@ import {today,next,previous} from "../utils/date-time"
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({setCurrentDate,currentDate,reservations, setReservationsError, reservationsError, tables}) {
+function Dashboard({setCurrentDate,currentDate,reservations,setReservationsError, reservationsError,tables,handleFinish}) {
   const history = useHistory();
 
   const dateHandler = async ({target}) => {
@@ -31,7 +31,6 @@ function Dashboard({setCurrentDate,currentDate,reservations, setReservationsErro
     }
   }
 
-
   return (
     <main>
       <h1>Dashboard</h1>
@@ -46,7 +45,7 @@ function Dashboard({setCurrentDate,currentDate,reservations, setReservationsErro
       <ErrorAlert error={reservationsError} setReservationsError={setReservationsError} />
       <div className="d-flex justify-content-between p-4">
       <Reservations reservations={reservations}/>
-      <Tables tables={tables}/>
+      <Tables tables={tables} handleFinish={handleFinish}/>
       </div>
     </main>
   );

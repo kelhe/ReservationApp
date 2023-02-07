@@ -20,8 +20,8 @@ const handleChange = ({target}) => {
 }
 
 const handleSubmit = async (event) => {
-    const abortController = new AbortController();
     try {
+        const abortController = new AbortController();
         event.preventDefault();
         await seatReservationAt(reservation_id,tableId,abortController.signal)
         setRender(!render)
