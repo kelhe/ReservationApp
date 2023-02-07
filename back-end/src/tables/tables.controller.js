@@ -44,7 +44,7 @@ async function tableExists(req, res, next) {
     res.locals.table = found;
     return next();
   }
-  next({ status: 400, message: "This table does not exist." });
+  next({ status: 404, message: `Table with id: ${table_id} does not exist.` });
 }
 
 //checks if an existing reservation_id is associated with the table meaning it is occupied
@@ -79,6 +79,23 @@ async function update(req, res) {
   res.status(200).json({ data });
 }
 
+//checks if free so we can return error when trying to finish an unoccupied table
+async function checkIfFree(req,res,next){
+  if(!res.locals.table.reservation_id){
+    return next({status:400, message: "Table is not occupied. Cannot finish a free table!"})
+  }
+  next();
+}
+
+async function destroy(req,res){
+  const finishedTable = {
+    reservation_id : null,
+    table_id : res.locals.table.table_id
+  }
+  await service.update(finishedTable)
+  res.status(200).json({})
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [
@@ -95,4 +112,5 @@ module.exports = {
     asyncErrorBoundary(checkCapacity),
     asyncErrorBoundary(update),
   ],
+  delete: [asyncErrorBoundary(tableExists),asyncErrorBoundary(checkIfFree),asyncErrorBoundary(destroy)]
 };
