@@ -4,6 +4,7 @@ const VALID_PROPERTIES = [
     "mobile_number",
     "reservation_date",
     "reservation_time",
+    "status",
     "people",
     "table_name",
     "capacity",

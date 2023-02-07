@@ -2,6 +2,7 @@ const service = require("./tables.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasRequiredProperties = require("../errors/hasRequiredProperties");
 const reservationExists = require("../utils/reservationExists");
+const statusUpdate = require("../utils/statusUpdate")
 
 async function list(req, res) {
   const data = await service.list();
@@ -48,14 +49,18 @@ async function tableExists(req, res, next) {
 }
 
 //checks if an existing reservation_id is associated with the table meaning it is occupied
-async function checkIfOccupied(req, res, next) {
-  if (!res.locals.table.reservation_id) {
-    return next();
-  }
-  next({
+async function checkIfOccupiedOrSeated(req, res, next) {
+  const {table,reservation} = res.locals
+  if (table.reservation_id) {
+    return  next({
     status: 400,
     message: "Table is already occupied. Please select a new table.",
   });
+  }
+  if(reservation.status === "seated"){
+    return next({status:400, message : "Reservation is already seated."})
+  }
+  next();
 }
 //checks if the reservation amount of people fits in the table capacity selected.
 async function checkCapacity(req, res, next) {
@@ -108,9 +113,10 @@ module.exports = {
     asyncErrorBoundary(hasRequiredProperties("reservation_id")),
     asyncErrorBoundary(reservationExists),
     asyncErrorBoundary(tableExists),
-    asyncErrorBoundary(checkIfOccupied),
+    asyncErrorBoundary(checkIfOccupiedOrSeated),
     asyncErrorBoundary(checkCapacity),
+    asyncErrorBoundary(statusUpdate),
     asyncErrorBoundary(update),
   ],
-  delete: [asyncErrorBoundary(tableExists),asyncErrorBoundary(checkIfFree),asyncErrorBoundary(destroy)]
+  delete: [asyncErrorBoundary(tableExists),asyncErrorBoundary(checkIfFree), asyncErrorBoundary(statusUpdate),asyncErrorBoundary(destroy)]
 };

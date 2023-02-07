@@ -11,7 +11,7 @@ function Reservations({reservations}){
             <td className="h-25 px-3">{mobile_number}</td>
             <td className="h-25 px-3">{formatAs12Hr(reservation_time)}</td>
             <td className="h-25 px-3">{people}</td>
-            <td className="h-25 px-3">{status[0].toUpperCase() + status.slice(1)}</td>
+            <td className="h-25 px-3" data-reservation-id-status={reservation_id}>{status[0].toUpperCase() + status.slice(1)}</td>
             <td className="h-25 px-3">{status === "booked" ? <a href={`/reservations/${reservation_id}/seat`}><button>Seat</button></a> : null}</td>
         </tr>
     )})

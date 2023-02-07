@@ -1,7 +1,7 @@
 const reservationService = require("../reservations/reservations.service")
 
 async function reservationExists(req,res,next){
-    const reservation_id = req.params.reservation_Id || req.body.data.reservation_id
+    const reservation_id = req.params.reservation_id || req.body.data.reservation_id
     const found = await reservationService.read(reservation_id)
     if(found){
         res.locals.reservation = found
