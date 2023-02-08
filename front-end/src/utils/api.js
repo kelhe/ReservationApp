@@ -134,6 +134,23 @@ export async function updateReservationStatus(
     headers,
     signal,
     method: "PUT",
-    body: JSON.stringify({ data: {status: newStatus} }),
+    body: JSON.stringify({ data: { status: newStatus } }),
   });
+}
+
+export async function updateReservation(reservation_id,formData,signal){
+  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}`);
+  return await fetchJson(url, {
+    headers,
+    signal,
+    method: "PUT",
+    body: JSON.stringify({ data: formData }),
+  });
+}
+
+export async function getReservationWithId(id, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations/${id}`);
+  return await fetchJson(url, { headers, signal }, [])
+    .then(formatReservationDate)
+    .then(formatReservationTime);
 }

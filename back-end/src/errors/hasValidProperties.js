@@ -2,6 +2,7 @@ const VALID_PROPERTIES = [
     "first_name",
     "last_name",
     "mobile_number",
+    "reservation_id",
     "reservation_date",
     "reservation_time",
     "status",

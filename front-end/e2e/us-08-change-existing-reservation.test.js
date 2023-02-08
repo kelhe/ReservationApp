@@ -195,7 +195,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
         submitButton.click(),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]);
-
+      
       expect(page.url()).toContain("/dashboard");
 
       await page.screenshot({
