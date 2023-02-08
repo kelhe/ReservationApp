@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Reservations from "./Reservations";
 import ErrorAlert from "../layout/ErrorAlert";
 import { listReservations } from "../utils/api";
@@ -12,7 +12,27 @@ function Search({
   const [mobile, setMobile] = useState("");
   const [found, setFound] = useState([]);
   const [clicked, setClicked] = useState(false);
-
+  
+  useEffect(()=>{
+    const abortController = new AbortController();
+    async function reloadReservations(){
+      setReservationsError(null);
+      try {
+        if(clicked){
+          const response = await listReservations(
+            { mobile_number: mobile },
+            abortController.signal
+            );
+            setFound(response);
+          }
+      } catch (error) {
+        setReservationsError(error);
+      }
+    }
+    reloadReservations();
+    return () => abortController.abort();
+  },[render,mobile,setReservationsError,clicked])
+  
   const handleChange = ({ target }) => {
     setMobile(target.value);
   };
@@ -21,11 +41,6 @@ function Search({
     const abortController = new AbortController();
     try {
       event.preventDefault();
-      const response = await listReservations(
-        { mobile_number: mobile },
-        abortController.signal
-      );
-      setFound(response);
       setClicked(true);
     } catch (error) {
       setReservationsError(error);
@@ -69,8 +84,8 @@ function Search({
                 type="text"
                 id="mobile_number"
                 name="mobile_number"
-                pattern="^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$"
                 placeholder="Enter a customer's phone number"
+                pattern="^[*()+-= \/\d]{0,13}$"
                 size="28"
                 value={mobile}
                 onChange={handleChange}
