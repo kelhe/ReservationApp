@@ -33,6 +33,9 @@ function Routes() {
       <Route exact={true} path="/reservations">
         <Redirect to={"/dashboard"} />
       </Route>
+      <Route path="/dashboard">
+        <Dashboard date={date} />
+      </Route>
       <Route exact={true} path="/reservations/new">
         <NewReservation/>
       </Route>
@@ -41,9 +44,6 @@ function Routes() {
       </Route>
       <Route exact={true} path="/reservations/:reservation_id/edit">
         <EditReservation/>
-      </Route>
-      <Route path="/dashboard">
-        <Dashboard date={date} />
       </Route>
       <Route exact={true} path="/tables/new">
         <NewTable/>
