@@ -1,5 +1,6 @@
 import React from "react";
 import { formatAs12Hr } from "../utils/date-time";
+import {Link} from "react-router-dom"
 
 function Reservation({reservation, handleCancellation}){
     const {
@@ -27,16 +28,16 @@ function Reservation({reservation, handleCancellation}){
           </td>
           <td className="h-25 pr-1">
             {status === "booked" ? (
-              <a href={`/reservations/${reservation_id}/seat`}>
+              <Link to={`/reservations/${reservation_id}/seat`}>
                 <button>Seat</button>
-              </a>
+              </Link>
             ) : null}
           </td>
           <td className="h-25 pr-1">
             {status === "booked" ? (
-              <a href={`/reservations/${reservation_id}/edit`}>
+              <Link to={`/reservations/${reservation_id}/edit`}>
                 <button>Edit</button>
-              </a>
+              </Link>
             ) : null}
           </td>
           <td className="h-25 pr-1">
