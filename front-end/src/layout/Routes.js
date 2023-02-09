@@ -24,6 +24,7 @@ function Routes() {
     date = today();
   }
   
+  
   return (
     <Switch>
       <Route exact={true} path="/">

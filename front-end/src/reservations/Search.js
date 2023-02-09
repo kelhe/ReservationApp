@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Reservations from "./Reservations";
-import ErrorAlert from "../layout/ErrorAlert";
 import { listReservations } from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
 function Search() {
   const [mobile, setMobile] = useState("");
@@ -15,6 +15,7 @@ function Search() {
 
   const handleSubmit = async (event) => {
     const abortController = new AbortController();
+    setSearchErrors(null)
     try {
       event.preventDefault();
       const response = await listReservations({ mobile_number: mobile },abortController.signal);
@@ -30,9 +31,7 @@ function Search() {
     if (clicked) {
       if (found.length) {
         return (
-          <Reservations reservations={found}
-          setReservationsError={setSearchErrors}
-          reservationsError={searchErrors}/>
+          <Reservations reservations={found}/>
         );
       } else {
         return <h3>No reservations found</h3>;
@@ -44,10 +43,11 @@ function Search() {
 
   return (
     <div>
+      <ErrorAlert error={searchErrors} />
       <form onSubmit={handleSubmit}>
         <div className="row mx-1">
           <label htmlFor="mobile_number" className="d-flex flex-column py-3">
-            <h1>Search Reservations:</h1>
+          <h1>Search Reservations:</h1>
             <div className="">
               <input
                 className="my-2 mr-2"

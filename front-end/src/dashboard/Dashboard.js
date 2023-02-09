@@ -15,25 +15,19 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
 
-  useEffect(() => {
+  useEffect(loadDashboard, [date]);
+
+  function loadDashboard() {
     const abortController = new AbortController();
-    async function loadDashboard() {
-      setReservationsError(null);
-      try {
-        const resResponse = await listReservations(
-          { date },
-          abortController.signal
-        );
-        setReservations(resResponse);
-        const tabResponse = await listTables(abortController.signal);
-        setTables(tabResponse);
-      } catch (error) {
-        setReservationsError(error);
-      }
-    }
-    loadDashboard();
+    setReservationsError(null);
+    listReservations({ date }, abortController.signal)
+      .then(setReservations)
+      .catch(setReservationsError);
+    listTables(abortController.signal)
+      .then(setTables)
+      .catch(setReservationsError);
     return () => abortController.abort();
-  }, [date]);
+  }
 
   return (
     <main>
@@ -49,12 +43,14 @@ function Dashboard({ date }) {
         <div>
           <h4 className="mb-2">Reservations for {date}</h4>
           <Reservations
+            loadDashboard={loadDashboard}
             reservations={reservations}
             reservationsError={reservationsError}
             setReservationsError={setReservationsError}
           />
         </div>
         <Tables
+          loadDashboard={loadDashboard}
           tables={tables}
           setReservationsError={setReservationsError}
         />

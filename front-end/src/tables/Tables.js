@@ -1,7 +1,7 @@
 import React from "react";
 import { finishTable } from "../utils/api";
 
-function Tables({tables,setReservationsError}){
+function Tables({loadDashboard,tables,setReservationsError}){
 
     const handleFinish = async (table_id) => {
         const abortController = new AbortController();
@@ -12,6 +12,7 @@ function Tables({tables,setReservationsError}){
             )
           ) {
             await finishTable(table_id, abortController.signal);
+            await loadDashboard();
           }
         } catch (error) {
           setReservationsError(error);

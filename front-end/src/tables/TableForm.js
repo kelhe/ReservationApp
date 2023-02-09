@@ -27,7 +27,7 @@ function TableForm({handleChange,handleSubmit,formData}){
           name="capacity"
           min="1"
           onChange={handleChange}
-          value={Number(formData.capacity)}
+          value={formData.capacity}
           required
         />
       </label>
