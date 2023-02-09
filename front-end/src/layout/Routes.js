@@ -28,7 +28,6 @@ function Routes() {
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const [currentDate, setCurrentDate] = useState(date);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -36,7 +35,7 @@ function Routes() {
       setReservationsError(null);
       try {
         const resResponse = await listReservations(
-          { date: currentDate },
+          { date },
           abortController.signal
         );
         setReservations(resResponse);
@@ -48,7 +47,7 @@ function Routes() {
     }
     loadDashboard();
     return () => abortController.abort();
-  }, [currentDate, render]);
+  }, [date, render]);
 
   const handleFinish = async (table_id) => {
     const abortController = new AbortController();
@@ -75,25 +74,10 @@ function Routes() {
       <Route exact={true} path="/reservations">
         <Redirect to={"/dashboard"} />
       </Route>
-      <Route path="/dashboard">
-        <Dashboard
-          date={date}
-          render={render}
-          setRender={setRender}
-          currentDate={currentDate}
-          setCurrentDate={setCurrentDate}
-          reservations={reservations}
-          reservationsError={reservationsError}
-          setReservationsError={setReservationsError}
-          tables={tables}
-          handleFinish={handleFinish}
-        />
-      </Route>
       <Route exact={true} path="/reservations/new">
         <NewReservation
           setRender={setRender}
           render={render}
-          setCurrentDate={setCurrentDate}
           setReservationsError={setReservationsError}
           reservationsError={reservationsError}
         />
@@ -113,7 +97,18 @@ function Routes() {
           setReservationsError={setReservationsError}
           render={render}
           setRender={setRender}
-          setCurrentDate={setCurrentDate}
+        />
+      </Route>
+      <Route path="/dashboard">
+        <Dashboard
+          date={date}
+          render={render}
+          setRender={setRender}
+          reservations={reservations}
+          reservationsError={reservationsError}
+          setReservationsError={setReservationsError}
+          tables={tables}
+          handleFinish={handleFinish}
         />
       </Route>
       <Route exact={true} path="/tables/new">
