@@ -5,8 +5,6 @@ import ErrorAlert from "../layout/ErrorAlert";
 
 function Reservations({
   reservations,
-  setRender,
-  render,
   setReservationsError,
   reservationsError,
 }) {
@@ -19,7 +17,6 @@ function Reservations({
         )
       ) {
         await updateReservationStatus(id, "cancelled", abortController.signal);
-        setRender(!render);
       }
     } catch (error) {
       setReservationsError(error);
@@ -83,7 +80,6 @@ function Reservations({
     <div>
       <ErrorAlert
         error={reservationsError}
-        setReservationsError={setReservationsError}
       />
       <table>
         <thead>

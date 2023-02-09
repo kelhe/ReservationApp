@@ -5,7 +5,7 @@ import { getReservationWithId, updateReservation } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { formatAsDate, formatAsTime } from "../utils/date-time";
 
-function EditReservation({ reservationsError, setReservationsError, render,setRender,setCurrentDate }) {
+function EditReservation() {
   const history = useHistory() 
   const { reservation_id } = useParams();
   const initialEditForm = {
@@ -17,11 +17,12 @@ function EditReservation({ reservationsError, setReservationsError, render,setRe
     people: 1,
   };
   const [editForm, setEditForm] = useState(initialEditForm);
+  const [editFormErrors,setEditFormErrors] = useState(null);
 
   useEffect(() => {
     const abortController = new AbortController();
     async function getEditData() {
-      setReservationsError(null);
+      setEditFormErrors(null);
       try {
         const response = await getReservationWithId(
           reservation_id,
@@ -47,12 +48,12 @@ function EditReservation({ reservationsError, setReservationsError, render,setRe
         };
         setEditForm(currentData)
       } catch (error) {
-        setReservationsError(error);
+        setEditFormErrors(error);
       }
     }
     getEditData();
     return () => abortController.abort();
-  }, [reservation_id,setReservationsError]);
+  }, [reservation_id]);
 
   const handleEditChange = ({ target }) => {
     setEditForm({
@@ -68,11 +69,9 @@ function EditReservation({ reservationsError, setReservationsError, render,setRe
       const response = await updateReservation(reservation_id,editForm,abortController.signal);
       setEditForm(initialEditForm);
       const date = formatAsDate(response.reservation_date)
-      setCurrentDate(date)
-      setRender(!render)
       history.push(`/dashboard?date=${date}`)
     } catch (error) {
-      setReservationsError(error);
+      setEditFormErrors(error);
     }
     return () => abortController.abort();
   };
@@ -80,8 +79,7 @@ function EditReservation({ reservationsError, setReservationsError, render,setRe
   return (
     <div>
       <ErrorAlert
-        error={reservationsError}
-        setReservationsError={setReservationsError}
+        error={editFormErrors}
       />
       <ReservationForm
         handleSubmit={handleEditSubmit}

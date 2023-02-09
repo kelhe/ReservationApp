@@ -5,7 +5,7 @@ import { formatAsDate } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationForm from "./ReservationForm";
 
-function NewReservation({setCurrentDate,setReservationsError,reservationsError,render,setRender}) {
+function NewReservation() {
   const history = useHistory();
   const initialForm = {
     first_name: "",
@@ -16,6 +16,7 @@ function NewReservation({setCurrentDate,setReservationsError,reservationsError,r
     people: 1,
   };
   const [formData, setFormData] = useState(initialForm);
+  const [formErrors, setFormErrors] = useState(null)
   //handler form changes for the create form
   const handleChange = ({ target }) => {
     setFormData({
@@ -34,11 +35,9 @@ function NewReservation({setCurrentDate,setReservationsError,reservationsError,r
       );
       setFormData(initialForm);
       const newDate = formatAsDate(response.reservation_date);
-      setCurrentDate(newDate);
-      setRender(!render);
       history.push(`/dashboard?date=${newDate}`);
     } catch (error) {
-      setReservationsError(error);
+      setFormErrors(error)
     }
   };
 
@@ -46,8 +45,7 @@ function NewReservation({setCurrentDate,setReservationsError,reservationsError,r
     <div>
       <h1>New Reservation</h1>
       <ErrorAlert
-        error={reservationsError}
-        setReservationsError={setReservationsError}
+        error={formErrors}
       />
       <ReservationForm handleSubmit={handleSubmit} handleChange={handleChange} formData={formData} />
     </div>

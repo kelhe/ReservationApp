@@ -1,6 +1,23 @@
 import React from "react";
+import { finishTable } from "../utils/api";
 
-function Tables({tables, handleFinish}){
+function Tables({tables,setReservationsError}){
+
+    const handleFinish = async (table_id) => {
+        const abortController = new AbortController();
+        try {
+          if (
+            window.confirm(
+              "Is this table ready to seat new guests?\nThis cannot be undone."
+            )
+          ) {
+            await finishTable(table_id, abortController.signal);
+          }
+        } catch (error) {
+          setReservationsError(error);
+        }
+        return () => abortController.abort();
+      };
 
     const rows = tables.map((table)=>{
     const finishButton = (<button data-table-id-finish={table.table_id} onClick={()=>handleFinish(table.table_id)}>Finish</button>)

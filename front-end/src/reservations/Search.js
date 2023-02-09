@@ -1,37 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Reservations from "./Reservations";
 import ErrorAlert from "../layout/ErrorAlert";
 import { listReservations } from "../utils/api";
 
-function Search({
-  reservationsError,
-  setReservationsError,
-  render,
-  setRender,
-}) {
+function Search() {
   const [mobile, setMobile] = useState("");
   const [found, setFound] = useState([]);
   const [clicked, setClicked] = useState(false);
-  
-  useEffect(()=>{
-    const abortController = new AbortController();
-    async function reloadReservations(){
-      setReservationsError(null);
-      try {
-        if(clicked){
-          const response = await listReservations(
-            { mobile_number: mobile },
-            abortController.signal
-            );
-            setFound(response);
-          }
-      } catch (error) {
-        setReservationsError(error);
-      }
-    }
-    reloadReservations();
-    return () => abortController.abort();
-  },[render,mobile,setReservationsError,clicked])
+  const [searchErrors,setSearchErrors] = useState(null)
   
   const handleChange = ({ target }) => {
     setMobile(target.value);
@@ -41,9 +17,11 @@ function Search({
     const abortController = new AbortController();
     try {
       event.preventDefault();
+      const response = await listReservations({ mobile_number: mobile },abortController.signal);
+      setFound(response);
       setClicked(true);
     } catch (error) {
-      setReservationsError(error);
+      setSearchErrors(error);
     }
     return () => abortController.abort();
   };
@@ -52,13 +30,9 @@ function Search({
     if (clicked) {
       if (found.length) {
         return (
-          <Reservations
-            reservations={found}
-            setReservationsError={setReservationsError}
-            reservationsError={reservationsError}
-            setRender={setRender}
-            render={render}
-          />
+          <Reservations reservations={found}
+          setReservationsError={setSearchErrors}
+          reservationsError={searchErrors}/>
         );
       } else {
         return <h3>No reservations found</h3>;
@@ -70,10 +44,6 @@ function Search({
 
   return (
     <div>
-      <ErrorAlert
-        error={reservationsError}
-        setReservationsError={setReservationsError}
-      />
       <form onSubmit={handleSubmit}>
         <div className="row mx-1">
           <label htmlFor="mobile_number" className="d-flex flex-column py-3">

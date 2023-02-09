@@ -4,13 +4,15 @@ import { createTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import TableForm from "./TableForm";
 
-function NewTable({setRender,render,setReservationsError, reservationsError}) {
+function NewTable() {
   const history = useHistory();
   const initialForm = {
     table_name: "",
-    capacity: "",
+    capacity: 1,
   };
   const [formData, setFormData] = useState(initialForm);
+  const [formErrors,setFormErrors] = useState(null)
+
   const handleChange = ({ target }) => {
     setFormData({
       ...formData,
@@ -25,18 +27,17 @@ function NewTable({setRender,render,setReservationsError, reservationsError}) {
       const response = await createTable(formData,abortController.signal);
       setFormData(initialForm);
       if(response){
-        setRender(!render);
         history.push("/dashboard");
       }
     } catch (error) {
-      setReservationsError(error)
+      setFormErrors(error)
     }
   };
 
   return (
     <div>
       <h1>New Table</h1>
-      <ErrorAlert error={reservationsError} setReservationsError={setReservationsError}/>
+      <ErrorAlert error={formErrors}/>
       <TableForm
         handleSubmit={handleSubmit}
         handleChange={handleChange}

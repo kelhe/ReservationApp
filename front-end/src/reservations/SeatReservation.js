@@ -1,12 +1,29 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { seatReservationAt } from "../utils/api";
+import { listTables, seatReservationAt } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
-function SeatReservation({tables,reservationsError, setReservationsError,render,setRender}){
+function SeatReservation(){
 const history = useHistory();
 const {reservation_id} = useParams();
-const [tableId,setTableId] = useState("")
+
+const [tables,setTables] = useState([]);
+const [tableId,setTableId] = useState("");
+const [errors,setErrors] = useState(null)
+
+useEffect(()=>{
+    const abortController = new AbortController();
+    async function loadTables(){
+        try{
+          const response = await listTables(abortController.signal)
+          setTables(response)
+        } catch (error){
+            setErrors(error)
+        }
+    }
+    loadTables();
+    return () => abortController.abort();
+},[])
 
 
 const tableOptions = tables.map((table)=>(
@@ -20,21 +37,21 @@ const handleChange = ({target}) => {
 }
 
 const handleSubmit = async (event) => {
+    const abortController = new AbortController();
     try {
-        const abortController = new AbortController();
         event.preventDefault();
         await seatReservationAt(reservation_id,tableId,abortController.signal)
-        setRender(!render)
         history.push("/dashboard")
     } catch(error) {
-        setReservationsError(error)
+        setErrors(error)
     }
+    return () => abortController.abort();
 }
 
 return (
     <div>
         <h1>Seat Reservation</h1>
-        <ErrorAlert error={reservationsError} setReservationsError={setReservationsError}/>
+        <ErrorAlert error={errors}/>
         <form onSubmit={handleSubmit}>
             <label htmlFor="table_id">
                 Choose Table:   
