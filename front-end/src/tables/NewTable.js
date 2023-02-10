@@ -24,6 +24,15 @@ function NewTable() {
     const abortController = new AbortController();
     try {
       event.preventDefault();
+
+      //validation for table form data throws error if does not meet business rules
+      if(formData.table_name.length < 2){
+        throw new Error("Table name must be 2 or more characters.")
+      }
+      if(formData.capacity < 1){
+        throw new Error("Table capacity must be at least 1.")
+      }
+
       const response = await createTable(formData,abortController.signal);
       setFormData(initialForm);
       if(response){

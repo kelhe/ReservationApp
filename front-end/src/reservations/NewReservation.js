@@ -29,6 +29,28 @@ function NewReservation() {
     const abortController = new AbortController();
     try {
       event.preventDefault();
+
+      //business rules validation for reservation data
+      const [year,month,day] = formData.reservation_date.split("-");
+      const [hours,minutes,seconds = 0] = formData.reservation_time.split(":");
+      const reservationDateTime = new Date(year,month - 1, day, hours, minutes, seconds);
+
+      if(Date.now() - Date.parse(reservationDateTime) > 0){
+        throw new Error("Selected time has passed. Reservation can only be made for a future time.")
+      }
+      if(reservationDateTime.getDay() === 2){
+        throw new Error("Sorry, We're closed on Tuesdays!")
+      }
+      if(Number(hours+minutes) < 1030){
+        throw new Error("Please select a time after 10:30AM.")
+      }  
+      if(Number(hours+minutes) > 2130){
+        throw new Error("Please select a time before 9:30PM.")
+      }
+      if(formData.people < 1){
+        throw new Error("Reservation must have at least 1 guest.")
+      }
+      
       const response = await createReservation(
         formData,
         abortController.signal
