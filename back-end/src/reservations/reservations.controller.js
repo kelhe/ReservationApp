@@ -78,15 +78,14 @@ async function peoplePropertyIsValid(req, res, next) {
 }
 
 async function list(req, res) {
-  const { date = currentDate, mobile_number } = req.query; //if no date in query then default to today's date
-  let data;
-  if (date) {
-    data = await service.list(date);
-  }
+  const { date, mobile_number } = req.query; //if no date in query then default to today's date
   if (mobile_number) {
-    data = await service.search(mobile_number);
+    return res.json({data : await service.search(mobile_number)}) 
   }
-  res.json({ data });
+  if (date) {
+    return res.json({data : await service.list(date)})  
+  }
+  res.json({ data : await service.list() });
 }
 
 async function create(req, res) {

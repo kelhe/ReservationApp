@@ -8,11 +8,16 @@ function read(reservation_id) {
 }
 
 function list(date) {
-  return knex("reservations")
+  if(date){
+    return knex("reservations")
+      .where({ reservation_date: date })
+      .whereNotIn("status" , [ "finished" , "cancelled"]) 
+      .orderBy("reservation_time");
+  } else {
+    return knex("reservations")
     .select("*")
-    .where({ reservation_date: date })
-    .whereNot({ status: "finished" })
     .orderBy("reservation_time");
+  }
 }
 
 function create(newReservation) {
