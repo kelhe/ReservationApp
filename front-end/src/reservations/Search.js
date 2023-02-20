@@ -19,7 +19,8 @@ function Search() {
       try {
         const response = await listAll(abortController.signal);
         const numArr = response.map((reservation) => reservation.mobile_number);
-        setAutofill(numArr);
+        const removeDups = new Set(numArr)
+        setAutofill([...removeDups]);
       } catch (error) {}
     };
     mobileNumbers();
@@ -73,7 +74,6 @@ function Search() {
                 onChange={(event, newValue) => {
                   setMobile(newValue);
                 }}
-                id="free-solo-2-demo"
                 disableClearable
                 options={autofill.map((option) => option)}
                 renderInput={(params) => (

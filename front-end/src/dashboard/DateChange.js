@@ -1,30 +1,29 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { today, previous, next } from "../utils/date-time";
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
 
 function DateChange({ date }) {
   const history = useHistory();
   return (
-    <div className="btn-group d-flex" role="group">
-      <button
-        className="btn btn-secondary mr-1"
+    <ButtonGroup variant="outlined">
+      <Button
         onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
       >
-        Previous
-      </button>
-      <button
-        className="btn btn-secondary"
+        {`<`}
+      </Button>
+      <Button
         onClick={() => history.push(`/dashboard?date=${today()}`)}
       >
         Today
-      </button>
-      <button
-        className="btn btn-secondary ml-1"
+      </Button>
+      <Button
         onClick={() => history.push(`/dashboard?date=${next(date)}`)}
       >
-        Next
-      </button>
-    </div>
+        {`>`}
+      </Button>
+    </ButtonGroup>
   );
 }
 
