@@ -1,5 +1,7 @@
 import React from "react";
+import {Table,TableBody,TableCell,TableContainer,TableHead,TableRow, Paper,Button} from "@mui/material";
 import { finishTable } from "../utils/api";
+import CheckIcon from '@mui/icons-material/Check';
 
 function Tables({loadDashboard,tables,setReservationsError}){
 
@@ -20,29 +22,34 @@ function Tables({loadDashboard,tables,setReservationsError}){
         return () => abortController.abort();
       };
 
-    const rows = tables.map((table)=>{
-    const finishButton = (<button data-table-id-finish={table.table_id} onClick={()=>handleFinish(table.table_id)}>Finish</button>)
-    
-    return (
-    <tr key={table.table_id}>
-        <td className="px-3">{table.table_name}</td>
-        <td className="px-3">{table.capacity}</td>
-        <td className="px-3" data-table-id-status={table.table_id}>{table.reservation_id ? "Occupied" : "Free"}</td>
-        <td className="px-3">{table.reservation_id ? finishButton : null }</td> 
-    </tr>
-    )})
-    return (
-    <table>
-        <thead>
-            <tr>
-                <th className="px-3">Table</th>
-                <th className="px-3">Capacity</th>
-                <th className="px-3">Availability</th>
-            </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-    </table>
-    )
+      return (
+        <TableContainer component={Paper} sx={{maxWidth : 400}}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">Table</TableCell>
+              <TableCell align="center">Capacity</TableCell>
+              <TableCell align="center">Availability</TableCell>
+              <TableCell align="center" sx={{maxWidth : 70}}>Finish</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tables.map((table) => {
+               const finishButton = (<Button variant="contained" size="small" sx={{py : 1}} data-table-id-finish={table.table_id} onClick={()=>handleFinish(table.table_id)}>{<CheckIcon fontSize="1em" />}</Button>)
+              return (
+              <TableRow
+                key={table.table_id}
+                >
+                <TableCell align="center">{table.table_name}</TableCell>
+                <TableCell align="center">{table.capacity}</TableCell>
+                <TableCell align="center" data-table-id-status={table.table_id}>{table.reservation_id ? "Occupied" : "Free"}</TableCell>
+                <TableCell align="center">{table.reservation_id ? finishButton : null }</TableCell>
+              </TableRow>
+            )})}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
 }
 
 export default Tables

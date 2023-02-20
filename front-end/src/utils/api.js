@@ -64,6 +64,13 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
+export async function listAll(signal) {
+  const url = new URL(`${API_BASE_URL}/reservations`);
+  return await fetchJson(url, { headers, signal }, [])
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+}
+
 export async function createReservation(formData, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
   if (typeof formData.people == "string") {
@@ -138,7 +145,7 @@ export async function updateReservationStatus(
   });
 }
 
-export async function updateReservation(reservation_id,formData,signal){
+export async function updateReservation(reservation_id, formData, signal) {
   const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}`);
   return await fetchJson(url, {
     headers,

@@ -1,9 +1,9 @@
 import React from "react";
-import Reservation from "./Reservation";
 import { updateReservationStatus } from "../utils/api";
 import { useHistory } from "react-router-dom";
+import ReservationTable from "../reservations/ReservationTable";
 
-function Reservations({ loadDashboard, reservations }) {
+function Reservations({ loadDashboard, reservations, date }) {
   const history = useHistory()
   const handleCancellation = async (id) => {
     const abortController = new AbortController();
@@ -26,30 +26,9 @@ function Reservations({ loadDashboard, reservations }) {
     return () => abortController.abort();
   };
 
-  const rows = reservations.map((reservation) => (
-    <Reservation
-      key={reservation.reservation_id}
-      reservation={reservation}
-      handleCancellation={handleCancellation}
-    />
-  ));
-
   return (
     <div>
-      <table>
-        <thead>
-          <tr>
-            <th className="px-3">#</th>
-            <th className="px-3">Name</th>
-            <th className="px-3">Phone</th>
-            <th className="px-3">Date</th>
-            <th className="px-3">Time</th>
-            <th className="px-3">People</th>
-            <th className="px-3">Status</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </table>
+      <ReservationTable reservations={reservations} handleCancellation={handleCancellation} date={date}/>
     </div>
   );
 }
